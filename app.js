@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Created with JetBrains WebStorm.
  * User: 松松
  * Date: 12-7-24
@@ -100,6 +100,6 @@ function createHtml(htmlObj) {
     var fn = jade.compile(fs.readFileSync('./node_modules/index.jade'));
     var html = fn({htmlObj:htmlObj});
     console.log('\r\n正在生成html文件\r\n');
-    fs.writeFileSync('demo.html', html.replace(/\n/,'\r\n'));
+    fs.writeFileSync('demo.html', html.replace(/\n/gmi,'\r\n'));
     console.log('请上传demo.html  和 upload 文件夹');
 }

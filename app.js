@@ -36,7 +36,7 @@ files.forEach(function (name) {
 });
 console.log('\r\n发现' + files.length + "个文件夹\r\n");
 console.log('\r\n共' + pic + "张图片\r\n");
-exec('del upload demo.html /Q', {cwd:__dirname}, function (err) {
+exec('del upload index.html /Q', {cwd:__dirname}, function (err) {
     if (fileArr.length < 1) {
         console.log('为在pic目录发现任何图片文件，转换失败');
     } else {

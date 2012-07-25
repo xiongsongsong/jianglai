@@ -8,26 +8,34 @@
 
 
 var exec = require('child_process').exec;
-var map = require('./js/routes');
+var jade = require('jade');
 
 var fileArr = [];
+var htmlObj = [];
 
+var fs = require('fs');
 
-map.导航名称.forEach(function (item, index) {
-    exec('dir /D /B', {
-        cwd:'c:/jianglai/test/' + map.文件夹名称[index]
-    }, function (error, stdout) {
-        var arr = stdout.split(/\r\n/).filter(function (item) {
-            if (item.length > 1 && /(jpg|jpeg)/gi.test(item)) {
+var resource = __dirname + '\\pic';
+var files = fs.readdirSync(resource);
+files.sort();
+var pic = 0;
+files.forEach(function (name) {
+    var dir = __dirname + '\\pic\\' + name;
+    if (fs.statSync(dir).isDirectory()) {
+        var files = fs.readdirSync(dir);
+        var arr = files.filter(function (item) {
+            if (/(jpg|jpeg|gif|png)/gi.test(item)) {
+                pic++;
                 return item;
             }
         });
-
         fileArr.push(arr);
-        if (index + 1 === map.导航名称.length) {
-            convertImage(fileArr);
-        }
-    });
+    }
+});
+console.log('发现' + files.length + "个文件夹");
+console.log('共' + pic + "张图片");
+exec('del upload demo.html /Q', {cwd:__dirname}, function (err) {
+    convertImage(fileArr);
 });
 
 function convertImage(fileArr) {
@@ -36,29 +44,39 @@ function convertImage(fileArr) {
 
     function _convert(arr) {
         var _index = 0;
-
+        var html = {};
+        html.title = files[index];
+        html.data = [];
         function convert(file) {
-            console.log('正在转换图片:' + file);
-            var filename = __dirname + '\\photo\\' + Date.now().toString() + parseInt(Math.random() * 100000000, 10) + '.jpg';
-            exec('convert -auto-orient "' + file + '" -resize 192 ' + filename, {
-                cwd:'c:/jianglai/test/' + map.文件夹名称[index]
-            }, function (err, stdout) {
+            console.log('正在生成缩略图:' + file);
+            var filename = Date.now().toString() + parseInt(Math.random() * 100000000, 10) + '.jpg';
+            var filePath = __dirname + '\\upload\\' + filename;
+            exec('convert -auto-orient "' + file + '" -resize 192 ' + filePath, {
+                cwd:'c:/jianglai/pic/' + files[index]
+            }, function (err) {
                 _index++;
                 if (!err) {
-                    exec('identify ' + filename, {
-                            cwd:'c:/jianglai/test/' + map.文件夹名称[index]
+                    exec('identify ' + filePath, {
+                            cwd:'c:/jianglai/pic/' + files[index]
                         }, function (err, stdout) {
                             if (!err) {
                                 var offset = stdout.match(/JPEG (\d+)x(\d+)/);
                                 if (offset !== null && offset[1] && offset[2]) {
-                                    if (arr[_index] !== undefined) {
-                                        convert(arr[_index]);
-                                    } else {
-                                        index++;
-                                        if (fileArr[index] !== undefined) {
-                                            _convert(fileArr[index]);
-                                        }
-                                    }
+                                    html.data.push({
+                                        filename:filename,
+                                        height:offset[2]
+                                    });
+                                }
+                            }
+                            if (arr[_index] !== undefined) {
+                                convert(arr[_index]);
+                            } else {
+                                htmlObj.push(html);
+                                index++;
+                                if (fileArr[index] !== undefined) {
+                                    _convert(fileArr[index]);
+                                } else {
+                                    createHtml(htmlObj);
                                 }
                             }
                         }
@@ -71,4 +89,13 @@ function convertImage(fileArr) {
     }
 
     _convert(fileArr[index]);
+}
+
+function createHtml(htmlObj) {
+    var fs = require('fs');
+    var fn = jade.compile(fs.readFileSync('./node_modules/index.jade'));
+    var html = fn({htmlObj:htmlObj});
+    console.log('正在写入文件');
+    fs.writeFileSync('demo.html', html);
+    console.log('操作已经完成，可以FTP上传了');
 }

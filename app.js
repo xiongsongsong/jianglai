@@ -72,6 +72,8 @@ function convertImage(fileArr) {
                                         height:offset[2]
                                     });
                                 }
+                            } else {
+                                console.log("无法获得" + filename + '的文件信息');
                             }
                             if (arr[_index] !== undefined) {
                                 convert(arr[_index]);
@@ -86,6 +88,19 @@ function convertImage(fileArr) {
                             }
                         }
                     );
+                } else {
+                    console.log(filename + '本身有错，无法转换');
+                    if (arr[_index] !== undefined) {
+                        convert(arr[_index]);
+                    } else {
+                        htmlObj.push(html);
+                        index++;
+                        if (fileArr[index] !== undefined) {
+                            _convert(fileArr[index]);
+                        } else {
+                            createHtml(htmlObj);
+                        }
+                    }
                 }
             });
         }

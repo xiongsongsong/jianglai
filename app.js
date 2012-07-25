@@ -100,6 +100,6 @@ function createHtml(htmlObj) {
     var fn = jade.compile(fs.readFileSync('./node_modules/index.jade'));
     var html = fn({htmlObj:htmlObj});
     console.log('\r\n正在生成html文件\r\n');
-    fs.writeFileSync('demo.html', html);
+    fs.writeFileSync('demo.html', html.replace('\r\n','\r\n'));
     console.log('请上传demo.html  和 upload 文件夹');
 }

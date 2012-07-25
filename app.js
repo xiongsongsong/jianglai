@@ -32,8 +32,8 @@ files.forEach(function (name) {
         fileArr.push(arr);
     }
 });
-console.log('发现' + files.length + "个文件夹");
-console.log('共' + pic + "张图片");
+console.log('\r\n发现' + files.length + "个文件夹\r\n");
+console.log('\r\n共' + pic + "张图片\r\n");
 exec('del upload demo.html /Q', {cwd:__dirname}, function (err) {
     convertImage(fileArr);
 });
@@ -48,8 +48,8 @@ function convertImage(fileArr) {
         html.title = files[index];
         html.data = [];
         function convert(file) {
-            console.log('正在生成缩略图:' + file);
-            var filename = Date.now().toString() + parseInt(Math.random() * 100000000, 10) + '.jpg';
+            console.log('正在生成缩略图:\t' + file);
+            var filename = Date.now().toString() + parseInt(Math.random() * 10000000, 10) + '.jpg';
             var filePath = __dirname + '\\upload\\' + filename;
             exec('convert -auto-orient "' + file + '" -resize 192 ' + filePath, {
                 cwd:'c:/jianglai/pic/' + files[index]
@@ -95,7 +95,7 @@ function createHtml(htmlObj) {
     var fs = require('fs');
     var fn = jade.compile(fs.readFileSync('./node_modules/index.jade'));
     var html = fn({htmlObj:htmlObj});
-    console.log('正在写入文件');
+    console.log('\r\n正在生成html文件\r\n');
     fs.writeFileSync('demo.html', html);
-    console.log('操作已经完成，可以FTP上传了');
+    console.log('请上传demo.html  和 upload 文件夹');
 }

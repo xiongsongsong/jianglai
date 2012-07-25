@@ -29,7 +29,9 @@ files.forEach(function (name) {
                 return item;
             }
         });
-        fileArr.push(arr);
+        if (arr.length > 0) {
+            fileArr.push(arr);
+        }
     }
 });
 console.log('\r\n发现' + files.length + "个文件夹\r\n");
@@ -43,7 +45,6 @@ exec('del upload demo.html /Q', {cwd:__dirname}, function (err) {
 });
 
 function convertImage(fileArr) {
-
     var index = 0;
 
     function _convert(arr) {
@@ -100,6 +101,6 @@ function createHtml(htmlObj) {
     var fn = jade.compile(fs.readFileSync('./node_modules/index.jade'));
     var html = fn({htmlObj:htmlObj});
     console.log('\r\n正在生成html文件\r\n');
-    fs.writeFileSync('demo.html', html.replace(/\n/gmi,'\r\n'));
+    fs.writeFileSync('demo.html', html.replace(/\n/gmi, '\r\n'));
     console.log('请上传demo.html  和 upload 文件夹');
 }

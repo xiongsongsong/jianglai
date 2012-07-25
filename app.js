@@ -56,12 +56,12 @@ function convertImage(fileArr) {
             var filename = Date.now().toString() + parseInt(Math.random() * 10000000, 10) + '.jpg';
             var filePath = __dirname + '\\upload\\' + filename;
             exec('convert -auto-orient "' + file + '" -resize 192 ' + filePath, {
-                cwd:'c:/jianglai/pic/' + files[index]
+                cwd:__dirname + "\\pic\\" + files[index]
             }, function (err) {
                 _index++;
                 if (!err) {
                     exec('identify ' + filePath, {
-                            cwd:'c:/jianglai/pic/' + files[index]
+                            cwd:__dirname + "\\pic\\" + files[index]
                         }, function (err, stdout) {
                             if (!err) {
                                 var offset = stdout.match(/JPEG (\d+)x(\d+)/);
